@@ -92,22 +92,26 @@ export const search = action({
     fileId: v.string()
   },
   handler: async (ctx, args) => {
-    const embeddings = new GoogleGenerativeAIEmbeddings({
-      apiKey: 'AIzaSyBesw2lALeS7dv_ahEXvKx_rkDSLjdcUfo',
-      model: "text-embedding-004",
-      taskType: TaskType.RETRIEVAL_DOCUMENT,
-      title: "Document title",
-    });
+    const vectorStore = new ConvexVectorStore(
+      new GoogleGenerativeAIEmbeddings({
+        apiKey: 'AIzaSyBesw2lALeS7dv_ahEXvKx_rkDSLjdcUfo', // Your Google API key
+        model: "text-embedding-004", // 768 dimensions
+        taskType: TaskType.RETRIEVAL_DOCUMENT,
+        title: "Document title",
+      }),
+      { ctx });
 
-    const vectorStore = new ConvexVectorStore(embeddings, { ctx });
+    const resultOne = (await vectorStore.similaritySearch(args.query, 5))
+    .filter(q => q.metadata.fileId == args.fileId)
+    console.log(resultOne);
 
-    const allResults = await vectorStore.similaritySearch(args.query, 10);
-    const filtered = allResults.filter(
-      (r) => r.metadata?.fileId === args.fileId
-    );
+    return JSON.stringify(resultOne)
 
-    console.log("🔍 Filtered results:", filtered);
-    return JSON.stringify(filtered);
+    // const results = (await vectorStore.similaritySearch(args.query, 5))
+    // .filter(doc => doc.metadata.fileId === args.fileId);
+
+    // const answer = results.map(doc => doc.pageContent).join("\n\n");
+    // return answer;    
   },
 });
 

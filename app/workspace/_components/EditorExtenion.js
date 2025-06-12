@@ -16,6 +16,7 @@ import { List } from 'lucide-react'
 import { useAction } from 'convex/react'
 import { api } from '../../../convex/_generated/api'
 import { useParams } from 'next/navigation'
+import { chatSession } from '../../../configs/AIModel'
 
 export default function EditorExtenion({editor}) {
 
@@ -35,7 +36,25 @@ export default function EditorExtenion({editor}) {
             fileId: fileId
         })
 
-        console.log("Unformated ans: ",result);
+        const UnformattedAns = JSON.parse(result);
+        let AllUnformattedAns = '';
+        UnformattedAns && UnformattedAns.forEach(item => {
+            AllUnformattedAns = AllUnformattedAns+item.pageContent
+        });
+
+        const PROMPT = "For question:"+selectedText+" and with the given content as answer, give appropriate answer in HTML format."+
+        " The answer content is : "+AllUnformattedAns;
+
+        const AIModelResult = await chatSession.sendMessage(PROMPT);
+        console.log(AIModelResult.response.text());
+        const FinalAns = AIModelResult.response.text().replace('```','').replace('html','').replace('```','');
+
+        const AllText = editor.getHTML();
+        // editor.commands.setContent(AllText+'<p><strong>Answer:</strong>'+FinalAns+'</p>')
+        // editor.commands.setContent(AllText + '<div style="margin-top:5em;"><p><strong>Answer:</strong> ' + FinalAns + '</p></div>');
+        editor.commands.setContent(AllText + '<br/><p><strong>Answer:</strong> ' + FinalAns + '</p>');
+
+
 
     }
 
