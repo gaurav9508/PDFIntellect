@@ -9,11 +9,36 @@ import {
     Indent, Italic, 
     MoveLeft, Outdent, 
     Redo, Redo2,
+    Sparkles,
     Strikethrough, Subscript, Underline, Undo, Undo2 } from 'lucide-react'
 import React from 'react'
 import { List } from 'lucide-react'
+import { useAction } from 'convex/react'
+import { api } from '../../../convex/_generated/api'
+import { useParams } from 'next/navigation'
 
 export default function EditorExtenion({editor}) {
+
+    const { fileId } = useParams();
+    const SearchAI = useAction(api.myAction.search)
+
+    const onAiClick = async () =>{
+        const selectedText = editor.state.doc.textBetween(
+            editor.state.selection.from,
+            editor.state.selection.to,
+            ' '
+        )
+        console.log("selectedText: ", selectedText)
+
+        const result = await SearchAI({
+            query:selectedText,
+            fileId: fileId
+        })
+
+        console.log("Unformated ans: ",result);
+
+    }
+
     return editor && (
         <div className='p-5 flex gap-3'>
             <div className="control-group">
@@ -141,6 +166,12 @@ export default function EditorExtenion({editor}) {
                         title="Outdent List Item"
                     >
                         <Outdent />
+                    </button>
+                    <button
+                        onClick={() => onAiClick()}
+                        className={'hover:text-blue-500'}
+                    >
+                        <Sparkles/>
                     </button>
                 </div>
             </div>
