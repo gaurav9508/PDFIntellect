@@ -5,7 +5,7 @@ import {
     AlignRight, 
     Bold, 
     CornerDownLeft, 
-    //Highlighter, 
+    Highlighter, 
     Indent, Italic, 
     MoveLeft, Outdent, 
     Redo, Redo2,
@@ -106,18 +106,22 @@ export default function EditorExtenion({editor}) {
                     </button>
                     <button
                         onClick={() => editor.chain().focus().toggleUnderline().run()}
-                        className={`cursor-pointer ${editor.isActive('underline') ? 'is-active' : ''}`}
+                        className={`cursor-pointer ${
+                            editor.isActive('underline') ? 'text-blue-500' : ''
+                        }`}
                         title="Underline"
                     >
                         <Underline />
                     </button>
-                    {/* <button
+                    <button
                         onClick={() => editor.chain().focus().toggleHighlight().run()}
-                        className={`cursor-pointer ${editor.isActive('highlight') ? 'is-active' : ''}`}
+                        className={`cursor-pointer ${
+                            editor.isActive('highlight') ? 'text-blue-500' : ''
+                        }`}
                         title="Highlight"
                     >
                         <Highlighter />
-                    </button> */}
+                    </button>
                     <button
                         onClick={() => editor.chain().focus().toggleStrike().run()}
                         className={`cursor-pointer ${editor.isActive('strike') ? 'is-active' : ''}`}

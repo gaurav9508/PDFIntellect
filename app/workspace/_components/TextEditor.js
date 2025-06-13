@@ -7,6 +7,8 @@ import EditorExtenion from './EditorExtenion'
 import TextAlign from '@tiptap/extension-text-align'
 import BulletList from '@tiptap/extension-bullet-list'
 import ListItem from '@tiptap/extension-list-item'
+import HighlightExtension  from '@tiptap/extension-highlight'
+import Underline from '@tiptap/extension-underline'
 
 export default function TextEditor(props) {
     const editor = useEditor({
@@ -19,6 +21,8 @@ export default function TextEditor(props) {
             }),
             BulletList,
             ListItem,
+            HighlightExtension ,
+            Underline,
         ],
         editorProps:{
             attributes:{
