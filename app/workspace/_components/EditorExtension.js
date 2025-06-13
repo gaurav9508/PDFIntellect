@@ -11,19 +11,25 @@ import {
     Redo, Redo2,
     Sparkles,
     Strikethrough, Subscript, Underline, Undo, Undo2 } from 'lucide-react'
-import React from 'react'
+import React, { use, useMemo } from 'react'
 import { List } from 'lucide-react'
-import { useAction } from 'convex/react'
+import { useAction, useMutation } from 'convex/react'
 import { api } from '../../../convex/_generated/api'
-import { useParams } from 'next/navigation'
+import { notFound, useParams } from 'next/navigation'
 import { chatSession } from '../../../configs/AIModel'
+import { toast } from 'sonner'
+import { useUser } from '@clerk/nextjs'
 
-export default function EditorExtenion({editor}) {
+export default function EditorExtension({editor}) {
 
     const { fileId } = useParams();
     const SearchAI = useAction(api.myAction.search)
+    const saveNotes = useMutation(api.notes.AddNotes)
+    const {user} = useUser();
+
 
     const onAiClick = async () =>{
+        toast("Generating....")
         const selectedText = editor.state.doc.textBetween(
             editor.state.selection.from,
             editor.state.selection.to,
@@ -54,7 +60,11 @@ export default function EditorExtenion({editor}) {
         // editor.commands.setContent(AllText + '<div style="margin-top:5em;"><p><strong>Answer:</strong> ' + FinalAns + '</p></div>');
         editor.commands.setContent(AllText + '<br/><p><strong>Answer:</strong> ' + FinalAns + '</p>');
 
-
+        saveNotes({
+            notes:editor.getHTML(),
+            fileId:fileId,
+            createdBy:user?.primaryEmailAddress?.emailAddress
+        })
 
     }
 
