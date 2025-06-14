@@ -18,9 +18,10 @@ import { api } from '@/convex/_generated/api';
 import { useUser } from "@clerk/clerk-react";
 import uuid4 from 'uuid4';
 import axios from 'axios';
+import { toast } from 'sonner';
 
 
-export function UploadPdfDialog({children}) {
+export function UploadPdfDialog({children, isMaxFile}) {
     
   const generateUploadUrl = useMutation(api.fileStorage.generateUploadUrl);
   const addFileEntry = useMutation(api.fileStorage.AddFileEntryToDb);
@@ -72,12 +73,14 @@ export function UploadPdfDialog({children}) {
     // console.log(embeddedResult);
     setLoading(false);
     setOpen(false);
+
+    toast('File is ready!')
   }
 
   return (
       <Dialog open = {open}>
       <DialogTrigger asChild>
-        <Button onClick={() => setOpen(true)} className='w-full'>+ Upload PDF File</Button>
+        <Button onClick={() => setOpen(true)} disabled={isMaxFile} className='w-full'>+ Upload PDF File</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
