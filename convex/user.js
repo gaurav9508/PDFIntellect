@@ -18,7 +18,8 @@ export const createUser = mutation({
             await ctx.db.insert('users', {
                 email: args.email,
                 userName: args.userName,
-                imageUrl: args.imageUrl
+                imageUrl: args.imageUrl,
+                upgrade:false
             });
 
             return 'Inserted New User';
@@ -26,4 +27,20 @@ export const createUser = mutation({
 
         return 'User Already Exists';
     }
-});
+})
+
+export const userUpgradePlan = mutation({
+    args:{
+        userEmail:v.string()
+    },
+    handler: async (ctx, args) => {
+        const result = await ctx.db.query('users')
+        .filter((q) => q.eq(q.field('email'), args.userEmail)).collect();
+
+        if(result) {
+            await ctx.db.patch(result[0]._id, {upgrade: true})
+            return 'success'
+        }
+        return 'error'
+    }
+})

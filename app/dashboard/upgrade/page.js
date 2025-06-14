@@ -1,7 +1,19 @@
+"use client"
+import { PayPalButtons } from '@paypal/react-paypal-js'
+import { useMutation } from 'convex/react'
 import React from 'react'
+import { api } from '../../../convex/_generated/api'
+import { useUser } from '@clerk/nextjs'
+import { toast } from 'sonner'
 
 export default function UpgradePlans(props) {
-    
+    const userUpgradePlan = useMutation(api.user.userUpgradePlan)
+    const {user} = useUser();
+    const onPaymentSuccess = async () => {
+        const result = await userUpgradePlan({userEmail:user?.primaryEmailAddress?.emailAddress})
+        console.log(result);
+        toast('Plan upgraded successfully!!');
+    }
 
     return (
         <div>
@@ -31,7 +43,7 @@ export default function UpgradePlans(props) {
                     {/* Unlimited Plan */}
                     <div className="rounded-2xl border border-gray-200 p-6 text-center shadow-md">
                     <h2 className="text-xl font-semibold text-gray-900">Unlimited</h2>
-                    <p className="mt-2 text-5xl font-bold text-gray-900">9.99$ <span className="text-base font-normal text-gray-500">/One Time</span></p>
+                    <p className="mt-2 text-5xl font-bold text-gray-900">1.99$ <span className="text-base font-normal text-gray-500">/One Time</span></p>
 
                     <ul className="mt-6 space-y-3 text-gray-700 text-sm text-left">
                         <li className="flex items-center gap-2">✔ Unlimited PDF Upload</li>
@@ -40,9 +52,28 @@ export default function UpgradePlans(props) {
                         <li className="flex items-center gap-2">✔ Help center access</li>
                     </ul>
 
-                    <button className="mt-8 w-full rounded-full border border-indigo-600 bg-indigo-600 px-6 py-2 text-white font-medium hover:bg-indigo-700">
+                    {/* <button className="mt-8 w-full rounded-full border border-indigo-600 bg-indigo-600 px-6 py-2 text-white font-medium hover:bg-indigo-700">
                         Get Started
-                    </button>
+                    </button> */}
+                    <div className='mt-5'>
+                        <PayPalButtons 
+                        onApprove={() => onPaymentSuccess()}
+                        onCancel={() => console.log("Payment Cancel")}
+                        createOrder={(data, actions) => {
+                            return actions?.order?.create({
+                                purchase_units:[
+                                    {
+                                        amount:{
+                                            value:1.99,
+                                            currency_code:'USD'
+                                        }
+                                    }
+                                ]
+                            })
+                        }}
+                        />
+                    </div>
+                    
                     </div>
 
                 </div>
