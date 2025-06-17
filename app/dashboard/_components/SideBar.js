@@ -14,6 +14,11 @@ import Link from 'next/link'
 export default function SideBar(props) {
     const {user} = useUser();
     const path = usePathname();
+    const GetuserInfo = useQuery(api.user.GetuserInfo, {
+        userEmail:user?.primaryEmailAddress.emailAddress
+    })
+
+    console.log(GetuserInfo)
 
     const fileList = useQuery(api.fileStorage.GetUserFiles,{
         userEmail: user?.primaryEmailAddress?.emailAddress
@@ -26,7 +31,7 @@ export default function SideBar(props) {
             <Image src={'/logo.svg'} alt='logo' width={40} height={34}/>
 
             <div className='mt-10'>
-                <UploadPdfDialog isMaxFile = {fileList?.length>=5?true:false}>
+                <UploadPdfDialog isMaxFile = {(fileList?.length>=5 && !GetuserInfo.upgrade)?true:false}>
                     <Button className='w-full'>+ Upload PDF</Button>
                 </UploadPdfDialog>
                 <Link href={'/dashboard'}>
@@ -48,11 +53,11 @@ export default function SideBar(props) {
                 </div>
                 </Link>
             </div>
-            <div className='absolute bottom-24 w-[80%]'>
+            {!GetuserInfo?.upgrade && <div className='absolute bottom-24 w-[80%]'>
                 <Progress value={(fileList?.length/5)*100} />
                 <p className='text-sm mt-1'>{fileList?.length} out of 5 pdf uploaded</p>
                 <p className='text-sm text-gray-400 mt-2'>Upgrade to upload more PDFs</p>
-            </div>
+            </div>}
         </div>
     )
 }
