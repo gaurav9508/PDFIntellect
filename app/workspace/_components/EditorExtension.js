@@ -10,7 +10,7 @@ import {
     MoveLeft, Outdent, 
     Redo, Redo2,
     Sparkles,
-    Strikethrough, Subscript, Underline, Undo, Undo2 } from 'lucide-react'
+    Strikethrough, Subscript, Superscript, Underline, Undo, Undo2 } from 'lucide-react'
 import React, { use, useMemo } from 'react'
 import { List } from 'lucide-react'
 import { useAction, useMutation } from 'convex/react'
@@ -48,24 +48,43 @@ export default function EditorExtension({editor}) {
             AllUnformattedAns = AllUnformattedAns+item.pageContent
         });
 
-        const PROMPT = "For question:"+selectedText+" and with the given content as answer, give appropriate answer in HTML format."+
-        " The answer content is : "+AllUnformattedAns;
+        // const PROMPT = "For question:"+selectedText+" and with the given content as answer, give appropriate answer in HTML format."+
+        // " The answer content is : "+AllUnformattedAns;
+        const PROMPT = `You are a helpful assistant. Based on the given context, answer the question clearly and completely. 
+        Use only clean and valid HTML for formatting (like <p>, <ul>, <li>, <strong>, etc.). 
+        Do not include any markdown, backticks, or commentary — just the final HTML answer.
+        If the answer requires depth or explanation, provide a longer and more detailed response. 
+
+
+        Question: ${selectedText}
+        Context: ${AllUnformattedAns}`;
+
+        // const AIModelResult = await chatSession.sendMessage(PROMPT);
+        // console.log(AIModelResult.response.text());
+        // const FinalAns = AIModelResult.response.text().replace('```','').replace('html','').replace('```','');
+
+        // const AllText = editor.getHTML();
+        // editor.commands.setContent(AllText + '<br/><p><strong>Answer:</strong> ' + FinalAns + '</p>');
+
+        // saveNotes({
+        //     notes:editor.getHTML(),
+        //     fileId:fileId,
+        //     createdBy:user?.primaryEmailAddress?.emailAddress
+        // })
 
         const AIModelResult = await chatSession.sendMessage(PROMPT);
-        console.log(AIModelResult.response.text());
-        const FinalAns = AIModelResult.response.text().replace('```','').replace('html','').replace('```','');
+        const FinalAnsRaw = await AIModelResult.response.text();
+        const FinalAns = FinalAnsRaw.replace(/```html|```/g, "").trim();
+
 
         const AllText = editor.getHTML();
-        // editor.commands.setContent(AllText+'<p><strong>Answer:</strong>'+FinalAns+'</p>')
-        // editor.commands.setContent(AllText + '<div style="margin-top:5em;"><p><strong>Answer:</strong> ' + FinalAns + '</p></div>');
-        editor.commands.setContent(AllText + '<br/><p><strong>Answer:</strong> ' + FinalAns + '</p>');
+        editor.commands.setContent(AllText + '<p><strong>Answer:</strong> <span>' + FinalAns + '</span></p>');
 
         saveNotes({
-            notes:editor.getHTML(),
-            fileId:fileId,
-            createdBy:user?.primaryEmailAddress?.emailAddress
-        })
-
+            notes: editor.getHTML(),
+            fileId: fileId,
+            createdBy: user?.primaryEmailAddress?.emailAddress
+        });
     }
 
     return editor && (
@@ -151,7 +170,7 @@ export default function EditorExtension({editor}) {
                         className={`cursor-pointer ${editor.isActive('superscript') ? 'is-active' : ''}`}
                         title="Superscript"
                     >
-                        <Subscript />
+                        <Superscript />
                     </button>
                     <button
                         onClick={() => editor.chain().focus().undo().run()}

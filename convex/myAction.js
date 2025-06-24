@@ -1,57 +1,3 @@
-//Orignal
-// import { ConvexVectorStore } from "@langchain/community/vectorstores/convex";
-// import { action } from "./_generated/server.js";
-// import { api } from "./_generated/api.js";
-// import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
-// import { TaskType } from "@google/generative-ai";
-// import { v } from "convex/values";
-
-// export const ingest = action({
-//   args: {
-//     splitText: v.any(),
-//     fileId: v.string()
-//   },
-//   handler: async (ctx, args) => {
-//     await ConvexVectorStore.fromTexts(
-//       args.splitText,
-//       args.fileId,
-//       new GoogleGenerativeAIEmbeddings({
-//         apiKey: 'AIzaSyBesw2lALeS7dv_ahEXvKx_rkDSLjdcUfo', // Your Google API key
-//         model: "text-embedding-004", // 768 dimensions
-//         taskType: TaskType.RETRIEVAL_DOCUMENT,
-//         title: "Document title",
-//       }),
-//       { ctx }
-
-//     );
-//     return "Completed"
-//   },
-// });
-
-// export const search = action({
-//   args: {
-//     query: v.string(),
-//     fileId: v.string()
-//   },
-//   handler: async (ctx, args) => {
-//     const vectorStore = new ConvexVectorStore(
-//       new GoogleGenerativeAIEmbeddings({
-//         apiKey: 'AIzaSyBesw2lALeS7dv_ahEXvKx_rkDSLjdcUfo', // Your Google API key
-//         model: "text-embedding-004", // 768 dimensions
-//         taskType: TaskType.RETRIEVAL_DOCUMENT,
-//         title: "Document title",
-//       }),
-//       { ctx });
-
-//     const resultOne = (await vectorStore.similaritySearch(args.query, 1))
-//     .filter(q => q.metadata.fileId == args.fileId)
-//     console.log(resultOne);
-
-//     return JSON.stringify(resultOne)
-//   },
-// });
-
-
 import { ConvexVectorStore } from "@langchain/community/vectorstores/convex";
 import { action } from "./_generated/server.js";
 import { api } from "./_generated/api.js";
@@ -65,8 +11,10 @@ export const ingest = action({
     fileId: v.string()
   },
   handler: async (ctx, args) => {
+    const apiKey = process.env.GEMINI_API_KEY;
+
     const embeddings = new GoogleGenerativeAIEmbeddings({
-      apiKey: 'AIzaSyBesw2lALeS7dv_ahEXvKx_rkDSLjdcUfo',
+      apiKey,
       model: "text-embedding-004",
       taskType: TaskType.RETRIEVAL_DOCUMENT,
       title: "Document title",
@@ -92,9 +40,11 @@ export const search = action({
     fileId: v.string()
   },
   handler: async (ctx, args) => {
+    const apiKey = process.env.GEMINI_API_KEY;  //fetching gemini api key
+
     const vectorStore = new ConvexVectorStore(
       new GoogleGenerativeAIEmbeddings({
-        apiKey: 'AIzaSyBesw2lALeS7dv_ahEXvKx_rkDSLjdcUfo', // Your Google API key
+        apiKey, 
         model: "text-embedding-004", // 768 dimensions
         taskType: TaskType.RETRIEVAL_DOCUMENT,
         title: "Document title",
@@ -105,76 +55,6 @@ export const search = action({
     .filter(q => q.metadata.fileId == args.fileId)
     console.log(resultOne);
 
-    return JSON.stringify(resultOne)
-
-    // const results = (await vectorStore.similaritySearch(args.query, 5))
-    // .filter(doc => doc.metadata.fileId === args.fileId);
-
-    // const answer = results.map(doc => doc.pageContent).join("\n\n");
-    // return answer;    
+    return JSON.stringify(resultOne)  
   },
 });
-
-
-
-
-
-//Code wroking with only storing metadata as string
-
-// import { ConvexVectorStore } from "@langchain/community/vectorstores/convex";
-// import { action } from "./_generated/server.js";
-// import { api } from "./_generated/api.js";
-// import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
-// import { TaskType } from "@google/generative-ai";
-// import { v } from "convex/values";
-
-// export const ingest = action({
-//   args: {
-//     splitText: v.any(),
-//     fileId: v.string()
-//   },
-//   handler: async (ctx, args) => {
-//     // Create an array of fileId strings, one for each text chunk
-//     const metadataArray = args.splitText.map(() => args.fileId);
-    
-//     await ConvexVectorStore.fromTexts(
-//       args.splitText,
-//       metadataArray,  // Just passing the fileId as the metadata for each text
-//       new GoogleGenerativeAIEmbeddings({
-//         apiKey: 'AIzaSyBesw2lALeS7dv_ahEXvKx_rkDSLjdcUfo',
-//         model: "text-embedding-004",
-//         taskType: TaskType.RETRIEVAL_DOCUMENT,
-//         title: "Document title",
-//       }),
-//       { ctx }
-//     );
-//     return "Completed";
-//   },
-// });
-
-// export const search = action({
-//   args: {
-//     query: v.string(),
-//     fileId: v.string()
-//   },
-//   handler: async (ctx, args) => {
-//     const vectorStore = new ConvexVectorStore(
-//       new GoogleGenerativeAIEmbeddings({
-//         apiKey: 'AIzaSyBesw2lALeS7dv_ahEXvKx_rkDSLjdcUfo',
-//         model: "text-embedding-004",
-//         taskType: TaskType.RETRIEVAL_DOCUMENT,
-//         title: "Document title",
-//       }),
-//       { ctx }
-//     );
-    
-//     // Get similarity search results
-//     const results = await vectorStore.similaritySearch(args.query, 10);
-    
-//     // Filter where metadata equals the fileId string
-//     const resultOne = results.filter(q => q.metadata === args.fileId);
-    
-//     console.log(resultOne);
-//     return JSON.stringify(resultOne);
-//   },
-// });
