@@ -41,53 +41,64 @@ export default function Home() {
     console.log(result);
   };
   return (
-    // <main className="min-h-screen bg-gradient-to-r from-purple-100 to-blue-100 p-6">
-    <main className="min-h-screen bg-white/60 backdrop-blur-md p-6">
-      <header className="flex justify-between items-center py-4">
-        <div>
-          <Image src="/logo.svg" alt="Logo" width={40} height={34} />
+    <main className="min-h-screen bg-gradient-to-br from-white to-blue-50 px-6 py-4">
+      <header className="flex justify-between items-center py-3 px-6 bg-white/60 backdrop-blur-md rounded-full border shadow-md max-w-5xl mx-auto mt-4">
+        <div className="flex items-center gap-2">
+          <Image src="/logo.svg" alt="Logo" width={34} height={34} />
+          <span className="font-bold text-lg text-gray-800">PDFIntellect</span>
         </div>
-        <div className="flex gap-4 items-center pr-6">
+
+        <nav className="flex gap-10 text-sm text-gray-700 rounded-full bg-gradient-to-r from-indigo-50 to-purple-50 px-6 py-2">
+          <a href="#">How It Works</a>
+          <a href="#">Features</a>
+          <a href="#">Who It's For</a>
+          <a href="#">FAQ</a>
+        </nav>
+
+        <div className="flex items-center gap-5">
           <Button
-            className="hover:scale-105 transition-transform duration-200"
+            variant="outline"
+            className="rounded-full border border-indigo-500 text-indigo-600 font-semibold px-7 py-2 hover:bg-indigo-50"
             onClick={() => router.push(user ? "/dashboard" : "/sign-in")}
           >
             Get Started
           </Button>
-          <UserButton
-            appearance={{
-              elements: {
-                userButtonAvatarBox: {
-                  width: "34px",
-                  height: "34px",
+          {user && (
+            <UserButton
+              appearance={{
+                elements: {
+                  userButtonAvatarBox: {
+                    width: "34px",
+                    height: "34px",
+                  },
                 },
-              },
-            }}
-          />
+              }}
+            />
+          )}
         </div>
       </header>
 
-      <section className="text-center mt-20">
-        <h1 className="text-5xl font-bold leading-tight">
-          Simplify <span className="text-red-500">PDF</span>{" "}
-          <span className="text-blue-500">Note-Taking</span> with AI-Powered
+      <section className="text-center max-w-4xl mx-auto mt-24">
+        <p className="text-blue-600 font-medium">Learn Smarter, Not Harder</p>
+        <h1 className="text-5xl md:text-6xl font-extrabold leading-tight mt-4">
+          Meet Your Personal <br />
+          <span className="text-blue-600">PDF Assisstant</span>
         </h1>
-        <p className="mt-6 text-gray-600 max-w-2xl mx-auto text-lg">
-          Elevate your note-taking experience with our AI-powered PDF app.
-          Seamlessly extract key insights, summaries, and annotations from any
-          PDF with just a few clicks.
+        <p className="mt-6 text-gray-600 text-lg">
+          Let AI handle your PDFs—extract key points, take notes, and study
+          smarter.
         </p>
 
         <div className="mt-10 flex justify-center gap-6">
           <Button
             onClick={handleGetStarted}
-            className="px-6 py-3 text-lg bg-black text-white transition-transform duration-300 transform hover:scale-110 cursor-pointer"
+            className="px-6 py-3 text-lg bg-black text-white hover:scale-105 transition-transform"
           >
             Get Started
           </Button>
           <Button
             variant="outline"
-            className="px-6 py-3 text-lg transition-transform duration-300 transform hover:scale-110 cursor-pointer"
+            className="px-6 py-3 text-lg hover:scale-105 transition-transform"
           >
             Learn More
           </Button>

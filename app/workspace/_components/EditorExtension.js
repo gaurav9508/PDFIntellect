@@ -48,8 +48,6 @@ export default function EditorExtension({editor}) {
             AllUnformattedAns = AllUnformattedAns+item.pageContent
         });
 
-        // const PROMPT = "For question:"+selectedText+" and with the given content as answer, give appropriate answer in HTML format."+
-        // " The answer content is : "+AllUnformattedAns;
         const PROMPT = `You are a helpful assistant. Based on the given context, answer the question clearly and completely. 
         Use only clean and valid HTML for formatting (like <p>, <ul>, <li>, <strong>, etc.). 
         Do not include any markdown, backticks, or commentary — just the final HTML answer.
@@ -58,19 +56,6 @@ export default function EditorExtension({editor}) {
 
         Question: ${selectedText}
         Context: ${AllUnformattedAns}`;
-
-        // const AIModelResult = await chatSession.sendMessage(PROMPT);
-        // console.log(AIModelResult.response.text());
-        // const FinalAns = AIModelResult.response.text().replace('```','').replace('html','').replace('```','');
-
-        // const AllText = editor.getHTML();
-        // editor.commands.setContent(AllText + '<br/><p><strong>Answer:</strong> ' + FinalAns + '</p>');
-
-        // saveNotes({
-        //     notes:editor.getHTML(),
-        //     fileId:fileId,
-        //     createdBy:user?.primaryEmailAddress?.emailAddress
-        // })
 
         const AIModelResult = await chatSession.sendMessage(PROMPT);
         const FinalAnsRaw = await AIModelResult.response.text();
