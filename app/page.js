@@ -1,11 +1,12 @@
 "use client";
-import { useEffect } from "react";
+import { startTransition, useEffect } from "react";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function Home() {
   const { user } = useUser();
@@ -14,11 +15,16 @@ export default function Home() {
   const router = useRouter();
 
   const handleGetStarted = () => {
+    const id = toast.loading("Redirecting...");
+
     if (!user) {
-      router.push("/sign-in"); // Clerk's login route
+      router.push("/sign-in");
     } else {
       router.push("/dashboard");
     }
+
+    // Automatically dismiss after short delay
+    setTimeout(() => toast.dismiss(id), 1500);
   };
 
   useEffect(() => {
@@ -36,7 +42,7 @@ export default function Home() {
   };
   return (
     // <main className="min-h-screen bg-gradient-to-r from-purple-100 to-blue-100 p-6">
-      <main className="min-h-screen bg-white/60 backdrop-blur-md p-6">
+    <main className="min-h-screen bg-white/60 backdrop-blur-md p-6">
       <header className="flex justify-between items-center py-4">
         <div>
           <Image src="/logo.svg" alt="Logo" width={40} height={34} />
@@ -74,8 +80,8 @@ export default function Home() {
 
         <div className="mt-10 flex justify-center gap-6">
           <Button
-            className="px-6 py-3 text-lg bg-black text-white transition-transform duration-300 transform hover:scale-110 cursor-pointer"
             onClick={handleGetStarted}
+            className="px-6 py-3 text-lg bg-black text-white transition-transform duration-300 transform hover:scale-110 cursor-pointer"
           >
             Get Started
           </Button>
