@@ -21,7 +21,7 @@ export default function UpgradePlans(props) {
             <p>Upgrade your plan to upload mulitple PDFs.</p>
 
             <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
                     {/* Free Plan */}
                     <div className="rounded-2xl border border-gray-200 p-6 text-center shadow-md">
