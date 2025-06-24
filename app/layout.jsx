@@ -7,7 +7,7 @@ import { Toaster } from "@/components/ui/sonner";
 
 export const metadata = {
   title: "PDFIntellect",
-  description: "GUpload and summarize PDF documents using Google Gemini AI. Take notes, manage files, and streamline your workflow with PDFIntellect.",
+  description: "Upload and summarize PDF documents using Google Gemini AI. Take notes, manage files, and streamline your workflow with PDFIntellect.",
 };
 
 const outfit = Outfit({subsets: ["latin"]});
