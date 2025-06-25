@@ -11,7 +11,7 @@ export const ingest = action({
     fileId: v.string()
   },
   handler: async (ctx, args) => {
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GOOGLE_API_KEY;
 
     const embeddings = new GoogleGenerativeAIEmbeddings({
       apiKey,
@@ -40,7 +40,7 @@ export const search = action({
     fileId: v.string()
   },
   handler: async (ctx, args) => {
-    const apiKey = process.env.GEMINI_API_KEY;  //fetching gemini api key
+    const apiKey = process.env.GOOGLE_API_KEY;  //fetching gemini api key
 
     const vectorStore = new ConvexVectorStore(
       new GoogleGenerativeAIEmbeddings({

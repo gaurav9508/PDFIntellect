@@ -31,15 +31,36 @@ export default function Home() {
     user && checkUser();
   }, [user]);
 
-  const checkUser = async () => {
-    const result = await createUser({
-      email: user?.primaryEmailAddress?.emailAddress,
-      imageUrl: user?.imageUrl,
-      userName: user?.fullName,
-    });
+  // const checkUser = async () => {
+  //   const result = await createUser({
+  //     email: user?.primaryEmailAddress?.emailAddress,
+  //     imageUrl: user?.imageUrl,
+  //     userName: user?.fullName,
+  //   });
 
-    console.log(result);
+  //   console.log(result);
+  // };
+
+  const checkUser = async () => {
+    if (!user) return;
+
+    const email =
+      user.primaryEmailAddress?.emailAddress ||
+      user.emailAddresses?.[0]?.emailAddress;
+    const imageUrl = user.imageUrl || "";
+    const userName = user.fullName || email;
+
+    if (email) {
+      const result = await createUser({
+        email,
+        imageUrl,
+        userName,
+      });
+
+      console.log(result);
+    }
   };
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-white to-blue-50 px-6 py-4">
       <header className="flex justify-between items-center py-3 px-6 bg-white/60 backdrop-blur-md rounded-full border shadow-md max-w-5xl mx-auto mt-4">
