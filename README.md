@@ -2,7 +2,7 @@
 
 An AI-powered PDF note-taking web app built with **Next.js**, **Convex**, **Clerk**, **Gemini API**, and **TailwindCSS**. Easily upload, extract, and summarize PDFs using the power of generative AI.
 
-Vercel: https://pdfintellect.vercel.app/
+Vercel: [https://pdfintellect.vercel.app/](http://pdfintellect-private.vercel.app)
 
 ---
 
